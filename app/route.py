@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 import base64
 from process.processImage import detect, generate_html
+import json
 
 apr = Blueprint('apr', __name__)
 users_db={
@@ -96,7 +97,7 @@ def upload_image():
     image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
     ret_image = detect(image,session.get('username'))
     # 生成展示
-    
+
     #!!项目根目录为开始路径
     user_path = os.path.join("user",session.get('username'),"latest","image")
     #生成答案容器
@@ -124,5 +125,34 @@ def serve_image(user, filename):
     """
     absolute_path = os.path.join("..",'user', user, 'latest', 'image', filename)
     return send_file(absolute_path)
+
+@apr.route('/call_python_function', methods=['POST'])
+def call_python_function():
+    """
+    点击按钮后的处理函数,按钮功能是将记录改成正确的,即将json文件中的correct字段改为True
+    :return:
+    """
+    #按钮返回的json数据
+    data = request.get_json()
+    #获得图片名
+    image_name = data.get('image_name')
+    #获得用户名
+    user = data.get("user")
+    #获得图片的json文件名
+    j_name = image_name.replace(".png", ".json")
+    #根据user图片的json文件路径,open的路径是项目根目录
+    json_file_path = os.path.join("user",user, "latest", "json",j_name)
+    #打开json文件
+    with open(json_file_path, 'r', encoding='GBK') as f:
+        data = json.load(f)
+    #将json文件中的correct字段改为True
+    data["correct"] = True
+    #写回json
+    with open(json_file_path, 'w') as f:
+        json.dump(data, f, indent=4)
+
+    print(f"{image_name} correct")
+    # 可以返回一个响应
+    return jsonify({"status": "success", "image_name": image_name,"user":user})
 
 
