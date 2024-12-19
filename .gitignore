@@ -1,5 +1,13 @@
-__pycach__
-*.jpg
+*.tif
 *.png
+*.json
+*.box
+train_ocr
+best_accuracy
+test.py
 *.pyc
 .idea
+*.jpg
+*.gradio
+user
+__pycache__

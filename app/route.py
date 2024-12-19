@@ -1,9 +1,9 @@
-from flask import Blueprint, flash, render_template, request, jsonify, redirect, url_for, session,current_app
-from werkzeug.utils import secure_filename
+from flask import Blueprint, render_template, request, jsonify, redirect, send_file, url_for, session,current_app
 import os
 import numpy as np
 import cv2
 import base64
+from process.processImage import detect, generate_html
 
 apr = Blueprint('apr', __name__)
 users_db={
@@ -54,6 +54,8 @@ def register():
 @apr.route('/main')
 def main():
     user = session.get('username')
+    with open ("./user/test.html","r",encoding="utf-8") as f:
+        result = f.read()
     return render_template('main.html', user=user)
 
 
@@ -67,6 +69,7 @@ def logout():
 # 检查文件扩展名是否被允许
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+
 
 @apr.route('/upload_image', methods=['POST'])
 def upload_image():
@@ -84,33 +87,42 @@ def upload_image():
         return jsonify({'error': 'No image file provided'}), 400
     
     file = request.files['image']
-    selection = session.get('selection')
-    print(selection)
-    
+
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
     
     file_bytes = np.frombuffer(file.read(), np.uint8)
-
     # 使用 OpenCV 解码为图像
     image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    #-------------------------------------#
-    #image是一个cv2图片对象                  
-    #模型处理返回图片
-    # 将返回的图片在下一行代码输入            
-    #-------------------------------------#
+    ret_image = detect(image,session.get('username'))
+    # 生成展示
     
-    convert_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)#转换颜色通道
-    convert_image = cv2.threshold(convert_image, 127, 255, cv2.THRESH_BINARY)[1]
-    
-    # 保存图片为jpeg
-    _, buffer = cv2.imencode('.jpg', convert_image)#image更换为你输入的cv2图片对象
+    #!!项目根目录为开始路径
+    user_path = os.path.join("user",session.get('username'),"latest","image")
+    #生成答案容器
+    result_html = generate_html(user_path,session.get('username'))
 
+    # 保存图片为jpeg
+    _, buffer = cv2.imencode('.jpg', ret_image)#image更换为你输入的cv2图片对象
     # 将图片编码为 base64 字符串
     encoded_string = base64.b64encode(buffer).decode('utf-8')
 
     # 假设返回的一张图片和两个字符串
     #返回base64编码后的图片和文本
     return jsonify({
-        'imageUrl': encoded_string
+        'imageUrl': encoded_string,
+        "result_html": result_html
     })
+
+@apr.route('/<path:user>/image/<path:filename>')
+def serve_image(user, filename):
+    """
+    静态托管图片
+    :param user:
+    :param filename:
+    :return:
+    """
+    absolute_path = os.path.join("..",'user', user, 'latest', 'image', filename)
+    return send_file(absolute_path)
+
+

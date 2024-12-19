@@ -22,12 +22,11 @@
             <button type="submit" class="logout-btn">Logout</button>
         </form>    
     </div>
-    
+
     <!-- 页面内容 -->
-    <div class="content">
-        
+    <div class="content">     
         <div class="upload-container">
-            <h2>Upload Image</h2>
+            <h2>请在此处上传图片</h2>
             <div class="upload-box">
                 <input type="file" id="image-input" style="display: none;">
                 <button id = "uploadButton" onclick="document.getElementById('image-input').click();">上传图片</button>
@@ -35,11 +34,12 @@
                 <div id="image-container">
                 <span id="upload-text" style="color: #0288d1; font-size: 16px; font-weight: bold;">图片区域</span>
                 <img id="uploaded-image" src="" alt="Uploaded Image" style="display: none; max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 5px;">
+                <div id="loading" style="display: none; text-align: center;">
+                    <p class="dots">正在加载<span id="dots">.</span></p>
+                </div>
             </div>
         </div>
-        <div class="new-section">
-            <h2>New Section</h2>
-            <p>This is a new section that will appear below the upload area. It will stack vertically in smaller screens and appear next to the upload area on larger screens.</p>
+        <div class="new-section" id="new-section">
         </div>
     </div>
 
@@ -47,6 +47,11 @@
         document.getElementById('image-input').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('upload-text').style.display = 'none'; // 隐藏原来的文本
+                const img = document.getElementById('uploaded-image');
+                img.style.display = 'none';
+
                 const formData = new FormData();
                 formData.append('image', file);
                 fetch('/upload_image', {
@@ -64,9 +69,13 @@
                 .then(data => {
                     const url = data.imageUrl;
                     const img = document.getElementById('uploaded-image');
+                    const newContent = data.result_html;
+                    const contentContainer = document.getElementById('new-section');
+                    contentContainer.innerHTML = newContent;
                     img.src = 'data:image/png;base64,' + url;
                     img.style.display = 'block';
                     document.getElementById('upload-text').style.display = 'none';
+                    document.getElementById('loading').style.display = 'none';
                 })
                 .catch(error => {
                     alert('上传失败: ' + error.message);

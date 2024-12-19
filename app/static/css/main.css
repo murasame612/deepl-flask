@@ -57,7 +57,40 @@ body {
     padding: 20px;
     width: calc(100% - 250px);  /* 保证内容区域占据剩余空间 */
     display: flex;
+    flex-wrap: wrap;  /* 允许换行 */
+    gap: 20px;  /* 元素间距 */
 }
+
+/* 控制新区域和上传区域并排/垂直排列 */
+.upload-container, .new-section {
+    flex: 1 1 calc(50% - 20px);  /* 默认情况下两者占据 50% 宽度并且有间距 */
+    box-sizing: border-box;
+}
+
+/* 小屏幕下，改为垂直排列 */
+@media (max-width: 768px) {
+    .upload-container, .new-section {
+        flex: 1 1 100%;  /* 在小屏幕下两者占据 100% 宽度 */
+    }
+}
+
+/* 按钮和图片容器样式 */
+#image-container {
+    width: 100%; 
+    max-width: 500px; 
+    height: auto;
+    margin-top: 30px;
+    border: 2px dashed #116de6;  /* 蓝绿色边框 */
+    background-color: #e3f2fd;   /* 背景颜色 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    text-align: center;
+}
+
 
 .logout-btn {
     width: 70%;
@@ -77,18 +110,67 @@ body {
     background-color: #d32f2f;  /* 更深的红色，鼠标悬停效果 */
 }
 
-#image-container{
-    width: 100%; 
-    max-width: 500px; 
-    height: auto;
-    margin-top: 30px;
-    border: 2px dashed #116de6;  /* 蓝绿色边框 */
-    background-color: #e3f2fd;   /* 背景颜色 */
+.equal-body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-left:0%;
+    max-height: 80vh;  /* 限制最大高度 */
+    overflow-y: auto;  /* 超过最大高度时启用滑动条 */
+}
+.image-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
     border-radius: 8px;
-    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.image-item img {
+    max-width: 100px;
+    margin-right: 20px;
+    border-radius: 8px;
+}
+.image-item .info {
+    flex: 1;
+    margin-right: 20px;
+}
+.image-item .correct {
+    margin-right: 20px;
+}
+.image-item button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.image-item button:hover {
+    background-color: #0056b3;
+}
+
+#dots {
+    font-size: 24px;
+    color: #0288d1;
+    animation: dot-blink 1.5s steps(3, end) infinite;
+}
+
+@keyframes dot-blink {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+    100% { content: '.'; }
 }
