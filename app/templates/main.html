@@ -45,6 +45,7 @@
     </div>
 
     <script>
+        // 上传图片
         document.getElementById('image-input').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
@@ -102,6 +103,7 @@
                 .catch(error => console.error('Error:', error));
             }
 
+            //提交,批改后总结生成his数据
             document.getElementById('submit').addEventListener('click', function(event) {
                 event.preventDefault();  // 阻止表单提交
 
