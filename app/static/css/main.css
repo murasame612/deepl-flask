@@ -1,0 +1,94 @@
+/* 基本样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    background-color: #1e3a8a;  /* 蓝色背景 */
+    width: 250px;
+    height: 100vh;  /* 让侧边栏占满整个视口 */
+    padding-top: 20px;
+    position: fixed;
+}
+
+.logo {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+}
+
+.logo h2 {
+    font-size: 24px;
+}
+
+.nav-links {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.nav-links li {
+    margin: 20px 0;
+}
+
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+}
+
+.nav-links li a:hover {
+    background-color: #2563eb;  /* 更深的蓝色，用于鼠标悬停 */
+    border-radius: 4px;
+}
+
+.content {
+    margin-left: 250px;  /* 给内容区留出侧边栏的空间 */
+    padding: 20px;
+    width: calc(100% - 250px);  /* 保证内容区域占据剩余空间 */
+    display: flex;
+}
+
+.logout-btn {
+    width: 70%;
+    padding: 10px 20px;
+    background-color: #f44336;  /* 红色背景 */
+    color: white;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+    text-align: center;
+    transition: background-color 0.3s;
+    margin-left: 30px;
+}
+
+.logout-btn:hover {
+    background-color: #d32f2f;  /* 更深的红色，鼠标悬停效果 */
+}
+
+#image-container{
+    width: 100%; 
+    max-width: 500px; 
+    height: auto;
+    margin-top: 30px;
+    border: 2px dashed #116de6;  /* 蓝绿色边框 */
+    background-color: #e3f2fd;   /* 背景颜色 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    text-align: center;
+}

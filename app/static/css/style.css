@@ -1,0 +1,47 @@
+body {
+    background-color: #e3f2fd; /* 浅蓝色背景 */
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.login-box {
+    background-color: #2196f3; /* 蓝色背景 */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 300px;
+    text-align: center;
+    color: white;
+}
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.login-box button {
+    width: 100%;
+    padding: 10px;
+    background-color: #1976d2; /* 蓝色按钮 */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.login-box button:hover {
+    background-color: #1565c0; /* 深蓝色按钮悬停 */
+}
+.register-link {
+    color: #d4d4ea; /* 浅蓝色链接 */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link{
+    color: white;
+    }
+
