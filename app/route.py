@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, request, jsonify, redirect, send_file, url_for, session,current_app
 import os
 import numpy as np
@@ -5,11 +6,13 @@ import cv2
 import base64
 from process.processImage import detect, generate_html
 import json
+from .account import add_account_to_csv, verify_account,read_accounts_from_csv
+
 
 apr = Blueprint('apr', __name__)
-users_db={
-    "admin": {"password": "admin"},
-}
+csv_file = 'account.csv'
+
+
 
 @apr.before_request
 def check_login():
@@ -23,13 +26,16 @@ def index():
 
 @apr.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    登陆界面路由函数
+    """
     if request.method == 'POST':
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
 
-        user = users_db.get(username)
-        if user and user['password'] == password:
+        accounts = read_accounts_from_csv(csv_file)
+        if verify_account(accounts, username, password):
             session['username'] = username
             return jsonify({'success': True})
         else:
@@ -38,38 +44,51 @@ def login():
 
 @apr.route('/register', methods=['GET', 'POST'])
 def register():
+    """
+    注册路由函数
+    """
     if request.method == 'POST':
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
 
-        if username in users_db:
+        accounts = read_accounts_from_csv(csv_file)
+        if username in accounts:
             return jsonify({'success': False, 'message': '用户名已存在'}), 400
 
         # 保存用户数据
-        users_db[username] = {'password': password}
+        add_account_to_csv(csv_file,username, password)
         return jsonify({'success': True})
 
     return render_template('register.html')
 
 @apr.route('/main')
 def main():
+    """
+    主页面
+    """
     user = session.get('username')
-    with open ("./user/test.html","r",encoding="utf-8") as f:
-        result = f.read()
+    # 传递用户名到模板
     return render_template('main.html', user=user)
 
+@apr.route("/analysis")
+def analysis():
+    """
+    分析页面
+    """
+    user = session.get('username')
+    # 传递用户名到模板
+    return render_template("analysis.html",user=user)
+
+########################################
+#下方为函数URL
 
 @apr.route('/logout', methods=['POST'])
 def logout():
-    # 清除 session 中的用户名
+    # 清除 session 中的用户名,注销
     session.pop('username', None)
     print("已注销")
     return redirect(url_for('apr.login'))
-
-# 检查文件扩展名是否被允许
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 
 @apr.route('/upload_image', methods=['POST'])
@@ -95,6 +114,7 @@ def upload_image():
     file_bytes = np.frombuffer(file.read(), np.uint8)
     # 使用 OpenCV 解码为图像
     image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    # 切割图片,进行ocr识别,切割
     ret_image = detect(image,session.get('username'))
     # 生成展示
 
@@ -108,8 +128,7 @@ def upload_image():
     # 将图片编码为 base64 字符串
     encoded_string = base64.b64encode(buffer).decode('utf-8')
 
-    # 假设返回的一张图片和两个字符串
-    #返回base64编码后的图片和文本
+    #返回base64编码后的图片和公式批改的html
     return jsonify({
         'imageUrl': encoded_string,
         "result_html": result_html
@@ -154,5 +173,51 @@ def call_python_function():
     print(f"{image_name} correct")
     # 可以返回一个响应
     return jsonify({"status": "success", "image_name": image_name,"user":user})
+
+from process.getSum import save_in_user
+
+@apr.route('/submit', methods=['POST'])
+def submit():
+    """
+    提交按钮的处理函数,按钮功能是将用户的答题记录保存到用户的history文件夹下
+    """
+    save_in_user(session.get('username'))
+    return jsonify({'success': True})
+
+
+from GPT.LLM import chat
+@apr.route('/ana_report',methods=['POST'])
+def ana_report():
+    """
+    openai生成html
+    """
+    user = session.get('username')
+    result_html = chat(user)
+    return jsonify({"html":result_html})
+
+
+from process.getSum import gen_ala_html
+@apr.route('/ana_sum',methods=['POST'])
+def ana_sum_report():
+    """
+    生成简单总结和饼图
+    """
+    user = session.get('username')
+    result_html = gen_ala_html(user)
+    return jsonify({"html":result_html})
+
+@apr.route('/<path:user>/history/<path:filename>')
+def serve_pie_image(user, filename):
+    """
+    静态托管图片
+    :param user:
+    :param filename:
+    :return:
+    """
+    
+    absolute_path = os.path.join("..",'user', user, 'history',filename)
+    return send_file(absolute_path)
+
+
 
 

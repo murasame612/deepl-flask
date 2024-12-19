@@ -230,48 +230,39 @@ def generate_html(image_folder, user):
             correct_color = "gray"
             suppose_result = ""
         # 为每张图片创建一个包含图片、公式内容、是否正确和按钮的div容器
-        html_content += f"""
-        <div class="image-item">
-            <img src="{image_url}" alt="{filename}">
-            <div class="info">
-                <p>{json_content}</p>  <!-- 显示JSON中equality字段的内容 -->
-            </div>
-            <div class="correct">
-                <p style="color: {correct_color};">{correct_text}</p>  <!-- 显示“正确”或“错误”并添加字体颜色 -->
-            </div>
-            <div class="correct">
-                <p style="color: {correct_color};">{suppose_result}</p>  <!-- 显示“正确”或“错误”并添加字体颜色 -->
-            </div>
-            <div>
-                <button id="button-{filename}" onclick="callPythonFunction('{filename}', '{U}',this)">该公式计算正确</button>
-            </div>
-        </div>
-        """
-
-    # 关闭HTML标签
-    html_content += """
-        </div>
-        <script>
-            function callPythonFunction(imageName,user,button) {
-                console.log('Python function called for ' + imageName);
-                
-                // 隐藏当前按钮
-                button.style.display = 'none';
-                
-                fetch('/call_python_function', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({  image_name: imageName, user: user })
-                })
-                .then(response => response.json())
-                .catch(error => console.error('Error:', error));
-            }
-        </script>
-    </body>
-    </html>
-    """
+        if not correct_value:
+            html_content += f"""
+                <div class="image-item">
+                    <img src="{image_url}" alt="{filename}">
+                    <div class="info">
+                        <p>{json_content}</p>  <!-- 显示JSON中equality字段的内容 -->
+                    </div>
+                    <div class="correct">
+                        <p style="color: {correct_color};">{correct_text}</p>  <!-- 显示“正确”或“错误”并添加字体颜色 -->
+                    </div>
+                    <div class="correct">
+                        <p style="color: {correct_color};">{suppose_result}</p>  <!-- 显示“正确”或“错误”并添加字体颜色 -->
+                    </div>
+                    <div>
+                        <button id="button-{filename}" onclick="callPythonFunction('{filename}', '{U}',this)">该公式计算正确</button>
+                    </div>
+                </div>
+                """
+        else:
+            html_content += f"""
+                <div class="image-item">
+                    <img src="{image_url}" alt="{filename}">
+                    <div class="info">
+                        <p>{json_content}</p>  <!-- 显示JSON中equality字段的内容 -->
+                    </div>
+                    <div class="correct">
+                        <p style="color: {correct_color};">{correct_text}</p>  <!-- 显示“正确”或“错误”并添加字体颜色 -->
+                    </div>
+                    <div class="correct">
+                        <p style="color: {correct_color};">{suppose_result}</p>  <!-- 显示“正确”或“错误”并添加字体颜色 -->
+                    </div>
+                </div>
+                """
 
     # 保存生成的HTML文件
     # html_file_path = os.path.join("user", user, "images_gallery.html")
