@@ -8,8 +8,9 @@ from process.processImage import detect, generate_html
 import json
 from .account import add_account_to_csv, verify_account,read_accounts_from_csv
 
-
+#注册蓝图
 apr = Blueprint('apr', __name__)
+#账号csv的路径
 csv_file = 'account.csv'
 
 
