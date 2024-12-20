@@ -25,9 +25,13 @@
 
 
     <!-- 页面内容 -->
-    <div class="content">
-        <button id = "ana">生成智能分析报告</button>>
-        <button id = "gen-ala">生成总结</button>>
+    <div class="ana-content">
+        <div class="button-container">
+            <button id = "ana">生成智能分析报告</button>
+            <button id = "gen-ala">生成总结</button>
+            <button id = "delete_his">删除以往的记录</button>
+        </div>
+        
         <h2>分析报告</h2>
         <div class = "ana_text"></div>
         <div class = "ana_sum_text"></div>
@@ -76,7 +80,31 @@
                 .catch(error => {
                     console.error('请求出错:', error);
                 });
+
             });
+
+            document.getElementById("delete_his").addEventListener("click",function(event){
+                event.preventDefault();  // 阻止表单提交
+
+                fetch('/delete_his', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})  // 这里没有传递user数据
+                })
+                .then(response => response.json())  // 解析响应为JSON
+                .then(data => {
+                    if(data.status == "success"){
+                        alert("删除历史记录成功");
+                    }
+                    console.log('服务器响应:', data);
+                })
+                .catch(error => {
+                    console.error('请求出错:', error);
+                });
+            });
+
     </script>
 </body>
 </html>

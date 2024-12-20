@@ -220,5 +220,19 @@ def serve_pie_image(user, filename):
     return send_file(absolute_path)
 
 
+@apr.route("/about")
+def about():
+    user = session.get("username")
+    if user is None:
+        redirect(url_for(apr.login))
+    return render_template("about.html",user = user)
+
+from process.model import delete_his_json
+@apr.route("/delete_his",methods=["post"])
+def delete_his():
+    user = session.get("username")
+    #删除用户的历史记录
+    delete_his_json(user)
+    return jsonify({"status":"success"})
 
 

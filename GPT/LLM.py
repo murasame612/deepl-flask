@@ -6,9 +6,11 @@ def get_wrong_equation(user: str):
     history_path = f"user/{user}/history/his.json"  # 文件路径
     
     # 读取 JSON 文件
-    with open(history_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)  # 将文件内容加载为 Python 字典
-    
+    try:
+        with open(history_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)  # 将文件内容加载为 Python 字典
+    except FileNotFoundError:
+        return "没有历史记录！"
     # 处理数据
     wrong_equality_list = data['wrong_equality_list']  # 获取错误等式列表
     if wrong_equality_list == []:  # 如果列表为空，则返回提示信息

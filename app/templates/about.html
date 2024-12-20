@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Sidebar Navigation</title>
+    <link rel="stylesheet" href="../static/css/main.css">
+</head>
+<body>
+    <!-- 侧边栏导航 -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>用户：{{user|safe}}</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">上传图片</a></li>
+            <li><a href="/analysis">分析报告</a></li>
+            <li><a href="/about">关于我们</a></li>
+        </ul>
+
+        <form action="{{ url_for('apr.logout') }}" method="POST">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>    
+    </div>
+
+    <!--content类已经和侧边栏做分割了-->
+    <div class="content-text">
+        <h2 style="margin-bottom: 50px; color: blue;">本网站是深度学习大作业2024的结课作业</h2>
+        <p>由<strong>李飞扬</strong>和<strong>陈鸿文</strong>二人共同制作</p>
+        <p style="color: red;">本网站没有任何保密措施，请勿上传敏感信息，否则后果自负</p>
+        <h3 style="margin-top: 30px; color: blue;">两人分工:</h3>
+        <p>李：
+            PaddlePaddleOCR的微调与训练，总结报告功能模块，智能分析功能模块，OCR性能提升</p>
+
+        <p>陈：
+            分割模型训练，分割功能实现，flask前后端框架搭建，分割模型部署</p>
+
+    </div>

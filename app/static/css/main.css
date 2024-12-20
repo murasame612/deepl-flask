@@ -174,3 +174,94 @@ body {
     66% { content: '...'; }
     100% { content: '.'; }
 }
+
+#uploadButton{
+    padding: 10px 20px;
+    background-color: #1e3a8a;  /* 蓝色背景 */
+    color: white;
+    border: none;
+    margin-top: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    width: 30%;
+}
+
+#uploadButton:hover {
+    background-color: #2563eb;  /* 更深的蓝色，鼠标悬停效果 */
+}
+
+.content-text{
+    margin-left: 250px;  /* 给内容区留出侧边栏的空间 */
+    padding: 20px;
+    width: calc(100% - 250px);  /* 保证内容区域占据剩余空间 */
+    flex-wrap: wrap;  /* 允许换行 */
+    gap: 20px;  /* 元素间距 */
+}
+
+.ana-content{
+    margin-left: 250px;  /* 给内容区留出侧边栏的空间 */
+    padding: 20px;
+    width: calc(100% - 250px);  /* 保证内容区域占据剩余空间 */
+    flex-wrap: wrap;  /* 允许换行 */
+    gap: 20px;  /* 元素间距 */
+}
+
+/* 设置整体按钮容器样式 */
+.button-container {
+    display: flex; /* 使用 Flexbox 来布局 */
+    justify-content: left; /* 居中对齐按钮 */
+    gap: 20px; /* 按钮之间的间距 */
+    margin-top: 20px; /* 上边距 */
+}
+
+/* 按钮的共同样式 */
+.button-container button {
+    background-color: #007BFF; /* 蓝色背景 */
+    color: white; /* 白色字体 */
+    border: none; /* 去除边框 */
+    padding: 12px 24px; /* 内边距 */
+    font-size: 16px; /* 字体大小 */
+    border-radius: 8px; /* 圆角按钮 */
+    cursor: pointer; /* 鼠标悬停时显示手型 */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* 动画效果 */
+}
+
+/* 按钮悬停效果 */
+.button-container button:hover {
+    background-color: #0056b3; /* 悬停时更深的蓝色 */
+    transform: scale(1.05); /* 鼠标悬停时按钮稍微放大 */
+}
+
+/* 按钮被点击时的效果 */
+.button-container button:active {
+    background-color: #004085; /* 按钮点击时颜色更深 */
+    transform: scale(1); /* 防止点击时放大 */
+}
+
+/* 针对每个按钮进行不同的颜色处理 */
+#ana {
+    background-color: #007BFF;
+}
+
+#gen-ala {
+    background-color: #28a745; /* 绿色按钮 */
+}
+
+#delete_his {
+    background-color: #dc3545; /* 红色按钮 */
+}
+
+/* 每个按钮的不同悬停效果 */
+#ana:hover {
+    background-color: #0056b3;
+}
+
+#gen-ala:hover {
+    background-color: #218838;
+}
+
+#delete_his:hover {
+    background-color: #c82333;
+}
