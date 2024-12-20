@@ -235,4 +235,11 @@ def delete_his():
     delete_his_json(user)
     return jsonify({"status":"success"})
 
-
+#不缓存图片
+@apr.after_request
+def add_cache_control(response):
+    # 设置所有静态文件的缓存控制
+    if response.content_type.startswith('image'):
+        response.cache_control.no_store = True  # 不缓存图片
+        response.cache_control.max_age = 0
+    return response

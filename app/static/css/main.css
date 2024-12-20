@@ -192,6 +192,23 @@ body {
     background-color: #2563eb;  /* 更深的蓝色，鼠标悬停效果 */
 }
 
+#submit{
+    padding: 10px 20px;
+    background-color: #1e3a8a;  /* 蓝色背景 */
+    color: white;
+    border: none;
+    margin-top: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    width: 30%;
+}
+
+#submit:hover {
+    background-color: #2563eb;  /* 更深的蓝色，鼠标悬停效果 */
+}
+
 .content-text{
     margin-left: 250px;  /* 给内容区留出侧边栏的空间 */
     padding: 20px;

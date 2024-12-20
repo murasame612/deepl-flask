@@ -90,7 +90,7 @@ def detect(image,user):
     """
     if image is None:
         return None
-    save_path =os.path.join("./user",user,'image')
+    save_path =os.path.join("user",user,'image')
     if os.path.exists(save_path):
         clear_folder(save_path)
     os.makedirs(save_path,exist_ok=True)
@@ -102,11 +102,8 @@ def detect(image,user):
     #得到检测结果
     boxes = infer_nms_bboxes("model/best_fp16_640.onnx",os.path.join(save_path,"detected_image.png"))
     #分割并保存检测到的目标
-    start_time = time.time()
     _cut_and_save_images(os.path.join(save_path,"detected_image.png"),boxes, save_path)
-    end_time = time.time()
 
-    print(f"分割耗时：{end_time - start_time:.2f}秒")
     #画出检测结果
     result_img = draw_nms_boxes(boxes,os.path.join(save_path,"detected_image.png"))
     #OCR识别
