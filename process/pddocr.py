@@ -4,7 +4,7 @@ import os
 import re
 import concurrent.futures
 from paddlex import create_model
-from process.model import get_all_file_paths
+from process.model import get_all_file_paths, clear_folder
 import time
 
 """
@@ -58,6 +58,10 @@ def ocr_and_save(user: str, img_path: str):
     save_path = os.path.join("./user", user, "latest")
     img_save_path = os.path.join(save_path, "image")
     json_save_path = os.path.join(save_path, "json")
+
+    #删除原有文件
+    clear_folder(img_save_path)
+    clear_folder(json_save_path)
 
     # 一次性创建所有需要的文件夹
     os.makedirs(img_save_path, exist_ok=True)
