@@ -107,6 +107,14 @@ def detect(image,user):
 
     #画出检测结果
     result_img = draw_nms_boxes(boxes,os.path.join(save_path,"detected_image.png"))
+
+    #删除原有lastest文件
+    save_lates_path = os.path.join("./user", user, "latest")
+    img_latest_path = os.path.join(save_lates_path, "image")
+    json_latest_path = os.path.join(save_lates_path, "json")
+    clear_folder(img_latest_path)
+    clear_folder(json_latest_path)
+
     #OCR识别
     process_split_image(user)
     #删去错误图像

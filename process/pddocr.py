@@ -59,10 +59,6 @@ def ocr_and_save(user: str, img_path: str):
     img_save_path = os.path.join(save_path, "image")
     json_save_path = os.path.join(save_path, "json")
 
-    #删除原有文件
-    clear_folder(img_save_path)
-    clear_folder(json_save_path)
-
     # 一次性创建所有需要的文件夹
     os.makedirs(img_save_path, exist_ok=True)
     os.makedirs(json_save_path, exist_ok=True)
