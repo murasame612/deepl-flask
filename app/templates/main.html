@@ -86,6 +86,25 @@
                 });
             }
         });
+
+        // 调用修改函数
+        function callPythonFunction(imageName,user,button) {
+                console.log('Python function called for ' + imageName);
+
+                // 隐藏当前按钮
+                button.style.display = 'none';
+
+                fetch('/call_python_function', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({  image_name: imageName, user: user })
+                })
+                .then(response => response.json())
+                .catch(error => console.error('Error:', error));
+            }
+
             //提交,批改后总结生成his数据
             document.getElementById('submit').addEventListener('click', function(event) {
                 event.preventDefault();  // 阻止表单提交
