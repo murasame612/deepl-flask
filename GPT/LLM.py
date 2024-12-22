@@ -14,7 +14,7 @@ def get_wrong_equation(user: str):
     # 处理数据
     wrong_equality_list = data['wrong_equality_list']  # 获取错误等式列表
     if wrong_equality_list == []:  # 如果列表为空，则返回提示信息
-        return "暂无错误等式记录，请继续努力！"
+        return "您已经作对全部题目，请继续努力！"
     else:  # 如果列表不为空，则返回连接后的内容
         content_list = ['算式'+str(i+1)+': '+user+'计算'+wrong_equality_list[i][0]+'，但正确答案是'+wrong_equality_list[i][1]+'。' for i in range(len(wrong_equality_list))]  # 构造提示信息列表
         content = '\n'.join(content_list)  # 将列表内容用换行符连接
@@ -24,7 +24,7 @@ def get_wrong_equation(user: str):
 def chat(user:str):
 
     content = get_wrong_equation(user)
-    if content == "暂无错误等式记录，请继续努力！":
+    if content == "您已经作对全部题目，请继续努力！":
         result = content
     else:
 
