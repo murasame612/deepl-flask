@@ -9,5 +9,7 @@ test.py
 .idea
 *.jpg
 *.gradio
+test.ipynb
+test.py
 user
 __pycache__

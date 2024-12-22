@@ -164,25 +164,40 @@ def update_images(user:str):
 """
     return html_content
 
-def process_split_image(user:str):
+def process_split_image(user: str):
     """
-
     对用户的图片进行OCR识别，并保存结果
     @param user: str, 用户名
     @return: str, 识别结果
     """
-    #获取用户最新的图片
-    image_path = os.path.join("./user",user,"image")
-    #进行OCR识别
+    # 获取用户最新的图片
+    image_path = os.path.join("./user", user, "image")
+    
+    # 获取图片文件路径列表
     file_list = get_all_file_paths(image_path)
-    print(file_list)
 
+    # 确保至少有一个文件待处理
+    if len(file_list) <= 1:
+        return "没有待处理的图片"
+    
+    # 记录OCR处理开始的时间
     start_time = time.time()
-    for img_path in file_list[1:]:
-        ocr_and_save(user,img_path)
+    print(f"开始OCR处理时间: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}")
+    
+    # 传入所有文件列表，但只处理第二个及以后的文件
+    ocr_and_save(user, file_list[1:])
+    
+    # 记录OCR处理结束的时间
     end_time = time.time()
-    print(f"OCR识别耗时：{end_time - start_time:.2f}秒")
+    print(f"结束OCR处理时间: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))}")
+    
+    # 计算总的处理时间
+    processing_time = end_time - start_time
+    print(f"OCR处理总时间: {processing_time:.2f}秒")
+    
     return "识别完成"
+
+
 
 import os
 import json

@@ -4,6 +4,8 @@ opencv-python~=4.5.5.64
 shapely~=2.0.5
 pillow~=10.4.0
 gradio~=4.44.1
+paddlepaddle~=3.0.0b2
 paddlex~=3.0.0b2
 flask~=3.0.3
 openai
+Flask[async]
