@@ -11,14 +11,21 @@ import time
 该文件主要处理的是文字识别模块的纠错和公式判断结果的存储
 """
 
-def preprocess_image(img_path):
+def preprocess_image(img_path, process=True):
     """
     处理分割的图像
-    :param img_path:
-    :return:
+    :param img_path: 输入图像的文件路径
+    :param process: 是否进行图像处理，默认为True，表示进行处理
+    :return: 处理后的图像或原图
     """
     # 读取图像
     ima = cv2.imread(img_path)
+
+    # 如果不需要处理图像，直接返回原图
+    if not process:
+        return ima
+
+    # 如果需要处理，执行以下操作
     denoised_img = cv2.medianBlur(ima, 3)
     # 转为灰度图
     gray_img = cv2.cvtColor(denoised_img, cv2.COLOR_BGR2GRAY)
@@ -26,6 +33,7 @@ def preprocess_image(img_path):
     binary_img = cv2.adaptiveThreshold(gray_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        cv2.THRESH_BINARY, 11, 5)
     resized_img_rgb = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2RGB)
+
     return resized_img_rgb
 
 def save_ocr_result(res, img_save_path, json_save_path, index):
@@ -49,6 +57,7 @@ def ocr_and_save(user: str, img_path_list: list):
     @param user: str, 用户名
     @param img_path_list: list, 图片路径列表
     """
+    PROCESS = False  # 是否进行图像处理，默认为False，表示不进行处理
     # 加载模型
     model = create_model("best_accuracy/inference")
     
@@ -64,7 +73,8 @@ def ocr_and_save(user: str, img_path_list: list):
     # 使用线程池并行处理每个图片的预处理
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # 对所有图片进行并行预处理
-        preprocessed_images = list(executor.map(preprocess_image, img_path_list))
+        preprocessed_images = list(executor.map(lambda img_path: preprocess_image(img_path, process=PROCESS), img_path_list))
+
 
     # 动态计算batch_size
     total_images = len(img_path_list)
