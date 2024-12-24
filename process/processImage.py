@@ -178,8 +178,9 @@ def process_split_image(user:str):
     print(file_list)
 
     start_time = time.time()
-    for img_path in file_list[1:]:
-        ocr_and_save(user,img_path)
+    if len(file_list) <= 1:
+        return "没有待处理的图片"
+    ocr_and_save(user, file_list[1:])
     end_time = time.time()
     print(f"OCR识别耗时：{end_time - start_time:.2f}秒")
     return "识别完成"

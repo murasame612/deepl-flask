@@ -28,32 +28,30 @@ def preprocess_image(img_path):
     resized_img_rgb = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2RGB)
     return resized_img_rgb
 
-def save_ocr_result(outputs, img_save_path, json_save_path, index):
+def save_ocr_result(res, img_save_path, json_save_path, index):
     """
     批量保存OCR结果到图片和JSON文件
 
-    @param outputs: OCR模型输出
+    @param res: OCR模型输出
     @param img_save_path: 图片保存路径
     @param json_save_path: JSON保存路径
     @param index: 图片文件的索引
     """
-    for res in outputs:
-        # 保存图片和JSON
-        res.save_to_img(os.path.join(img_save_path, f"{index}.png"))
-        res.save_to_json(os.path.join(json_save_path, f"{index}.json"))
+    res.save_to_img(os.path.join(img_save_path, f"{index}.png"))
+    res.save_to_json(os.path.join(json_save_path, f"{index}.json"))
 
 
 #这个函数会被processImage.py调用，用来进行OCR识别并保存结果和图片到指定用户的latest文件夹
-def ocr_and_save(user: str, img_path: str):
+def ocr_and_save(user: str, img_path_list: list):
     """
     进行OCR识别并保存结果和图片到指定用户的latest文件夹
 
     @param user: str, 用户名
-    @param img_path: str, 图片路径
+    @param img_path_list: list, 图片路径列表
     """
-    print("ocr单独文件时间戳： ",time.time())
     # 加载模型
     model = create_model("best_accuracy/inference")
+    
     # 创建保存路径
     save_path = os.path.join("./user", user, "latest")
     img_save_path = os.path.join(save_path, "image")
@@ -63,23 +61,39 @@ def ocr_and_save(user: str, img_path: str):
     os.makedirs(img_save_path, exist_ok=True)
     os.makedirs(json_save_path, exist_ok=True)
 
-    # 进行OCR识别
-    result_img = preprocess_image(img_path)
-    outputs = model.predict(result_img, batch_size=1)
+    # 使用线程池并行处理每个图片的预处理
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # 对所有图片进行并行预处理
+        preprocessed_images = list(executor.map(preprocess_image, img_path_list))
 
-    # 批量保存图片和JSON
-    img_name = os.path.basename(img_path)
-    index, _ = os.path.splitext(img_name)
+    # 动态计算batch_size
+    total_images = len(img_path_list)
+    max_batch_size = 32  # 固定最大batch_size
 
-    # 使用线程池异步保存文件
+    # 设置batch_size，如果图片数量小于最大阈值，则使用图片数量作为batch_size
+    batch_size = min(max_batch_size, total_images)
+    print(f"使用的batch_size: {batch_size}")
+
+    # 批量输入到模型进行预测
+    outputs_generator = model.predict(preprocessed_images, batch_size=batch_size)  # 动态调整batch_size
+
+    # 使用线程池并行保存OCR结果
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = []
-        # 保存图片和JSON
-        futures.append(executor.submit(save_ocr_result, outputs, img_save_path, json_save_path, index))
         
+        # 遍历处理后的图片和OCR输出结果
+        for idx, (res, img_path) in enumerate(zip(outputs_generator, img_path_list)):
+            img_name = os.path.basename(img_path)
+            index, _ = os.path.splitext(img_name)
+
+            # 将每个任务提交给线程池
+            futures.append(executor.submit(save_ocr_result, res, img_save_path, json_save_path, index))
+
         # 等待所有任务完成
         for future in futures:
-            future.result()
+            future.result()  # 获取结果，确保所有任务都执行完
+
+    return "识别完成"
 
 
 def process_single_json(json_file_path):
