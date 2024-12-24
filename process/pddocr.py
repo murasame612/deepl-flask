@@ -26,9 +26,8 @@ def preprocess_image(img_path, process=True):
         return ima
 
     # 如果需要处理，执行以下操作
-    denoised_img = cv2.medianBlur(ima, 3)
     # 转为灰度图
-    gray_img = cv2.cvtColor(denoised_img, cv2.COLOR_BGR2GRAY)
+    gray_img = cv2.cvtColor(ima, cv2.COLOR_BGR2GRAY)
     # 调整大小（根据需求，可以修改宽高）
     binary_img = cv2.adaptiveThreshold(gray_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        cv2.THRESH_BINARY, 11, 5)
