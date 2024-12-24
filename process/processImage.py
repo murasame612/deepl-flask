@@ -100,8 +100,10 @@ def detect(image,user):
     #保存图片到user
     pil_image.save(os.path.join(save_path,"detected_image.png"))
     #得到检测结果
-    boxes = infer_nms_bboxes("model/best_fp16_640.onnx",os.path.join(save_path,"detected_image.png")
+    boxes = infer_nms_bboxes("model/best.onnx",os.path.join(save_path,"detected_image.png")
                              ,iou_threshold=0.5, score_threshold=0.65)
+    # boxes = infer_nms_bboxes("model/best_fp16_640.onnx",os.path.join(save_path,"detected_image.png")
+    #                          ,iou_threshold=0.5, score_threshold=0.65)
     #分割并保存检测到的目标
     _cut_and_save_images(os.path.join(save_path,"detected_image.png"),boxes, save_path)
 
