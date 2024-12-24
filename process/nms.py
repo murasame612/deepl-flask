@@ -62,7 +62,7 @@ def nms(boxes, iou_threshold=0.5, score_threshold=0.7):
 
     return selected_boxes
 
-def infer_nms_bboxes(md_path,input_ima_path,iou_threshold=0.5, score_threshold=0.7,d_type='float16',):
+def infer_nms_bboxes(md_path,input_ima_path,iou_threshold=0.5, score_threshold=0.7,d_type='float32',):
     prue_ret = onnxinfer(md_path, input_ima_path,d_type)
     boxes = list(prue_ret[0].T)
     nms_boxes_ret = nms(boxes,iou_threshold,score_threshold)
