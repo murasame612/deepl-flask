@@ -8,3 +8,4 @@ paddlex~=3.0.0b2
 flask~=3.0.3
 openai
 seaborn
+markdown

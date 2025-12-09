@@ -82,7 +82,7 @@ def _cut_and_save_images(image_path, boxes, save_path):
         output_filename = os.path.join(save_path, f"equality{idx}.png")
         cv2.imwrite(output_filename, cropped_img)
 
-def detect(image,user):
+def detect(image,user,score_threshold=0.5):
     """
     @param image: PIL.Image对象，输入的图片
     @param user: str, 用户名
@@ -101,7 +101,7 @@ def detect(image,user):
     pil_image.save(os.path.join(save_path,"detected_image.png"))
     #得到检测结果
     boxes = infer_nms_bboxes("model/best.onnx",os.path.join(save_path,"detected_image.png")
-                             ,iou_threshold=0.5, score_threshold=0.70,d_type='float32')
+                             ,iou_threshold=0.5, score_threshold=score_threshold,d_type='float32')
     # boxes = infer_nms_bboxes("model/best_fp16_640.onnx",os.path.join(save_path,"detected_image.png")
     #                          ,iou_threshold=0.5, score_threshold=0.65)
     #分割并保存检测到的目标
@@ -116,6 +116,8 @@ def detect(image,user):
     json_latest_path = os.path.join(save_lates_path, "json")
     clear_folder(img_latest_path)
     clear_folder(json_latest_path)
+    os.makedirs(img_latest_path, exist_ok=True)
+    os.makedirs(json_latest_path, exist_ok=True)
 
     #OCR识别
     process_split_image(user)
@@ -198,8 +200,15 @@ def generate_html(image_folder, user):
     :param user:
     :return:
     """
+    # 确保目录存在，避免空结果时报错
+    if not os.path.isdir(image_folder):
+        return "<p>暂无识别结果</p>"
+
     # 获取图片文件的路径列表
     image_paths = [f for f in os.listdir(image_folder) if f.endswith(('.jpg', '.jpeg', '.png', '.gif'))]
+
+    if not image_paths:
+        return "<p>暂无识别结果</p>"
 
     # 初始化HTML内容
     html_content = """
@@ -280,4 +289,3 @@ def generate_html(image_folder, user):
 
     print("HTML 文件已生成！")
     return html_content
-
