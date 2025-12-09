@@ -11,3 +11,4 @@ test.py
 *.gradio
 user
 __pycache__
+.DS_Store
