@@ -116,7 +116,7 @@ def upload_image():
     # 使用 OpenCV 解码为图像
     image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
     # 切割图片,进行ocr识别,切割
-    ret_image = detect(image,session.get('username'),score_threshold=0.5)
+    ret_image = detect(image,session.get('username'),current_app.config["threshold"])
     # 生成展示
 
     #!!项目根目录为开始路径
@@ -243,3 +243,4 @@ def add_cache_control(response):
         response.cache_control.no_store = True  # 不缓存图片
         response.cache_control.max_age = 0
     return response
+
