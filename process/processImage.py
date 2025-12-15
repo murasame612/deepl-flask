@@ -179,12 +179,14 @@ def process_split_image(user:str):
     image_path = os.path.join("./user",user,"image")
     #进行OCR识别
     file_list = get_all_file_paths(image_path)
-    print(file_list)
+    # 过滤掉原始检测图，避免重复参与OCR
+    filtered_files = [p for p in file_list if not p.endswith("detected_image.png")]
+    print(filtered_files)
 
     start_time = time.time()
-    if len(file_list) <= 1:
+    if len(filtered_files) == 0:
         return "没有待处理的图片"
-    ocr_and_save(user, file_list[1:])
+    ocr_and_save(user, filtered_files)
     end_time = time.time()
     print(f"OCR识别耗时：{end_time - start_time:.2f}秒")
     return "识别完成"
